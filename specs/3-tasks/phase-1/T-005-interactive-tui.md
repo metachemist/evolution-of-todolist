@@ -35,12 +35,16 @@ Based on: `@specs/2-plan/phase-1-console.md` - Interactive TUI Module section
 - T-003: CLI Interface
 
 ## Acceptance Criteria
-- [ ] Rich library is added to requirements.txt
-- [ ] Interactive menu displays with options (1-6) as specified
-- [ ] Task list displays in a formatted table with ID, Status, Title, Created At columns
-- [ ] Status is color-coded (Green for completed, Yellow for pending)
-- [ ] Menu accepts single-key inputs (1-6) for navigation
-- [ ] Root main.py detects arguments and switches between interactive/CLI modes
-- [ ] Screen clears between actions for clarity
-- [ ] All interactive operations work correctly (add, list, update, complete, delete)
-- [ ] Interactive mode integrates with existing TaskManager
+- [x] Rich library is added to requirements.txt
+- [x] Interactive menu displays with options (1-6) as specified
+- [x] Task list displays in a formatted table with ID, Status, Title, Created At columns
+- [x] Status is color-coded (Green for completed, Yellow for pending)
+- [x] Menu accepts single-key inputs (1-6) for navigation
+- [x] Root main.py detects arguments and switches between interactive/CLI modes
+- [x] Screen clears between actions for clarity
+- [x] All interactive operations work correctly (add, list, update, complete, delete)
+- [x] Interactive mode integrates with existing TaskManager
+
+## Status
+- Completed: 2026-02-05
+- Verified: Interactive TUI fully implemented with rich tables and menu navigation
