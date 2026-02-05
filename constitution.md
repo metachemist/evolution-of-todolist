@@ -237,46 +237,54 @@ evolution-of-todo-list-01/
 #### Directory Structure Rules
 
 **Root Level Files (Mandatory):**
+
 - `constitution.md` - This document (supreme authority)
 - `AGENTS.md` - Complete agent behavior specification
 - `CLAUDE.md` - Entry point for Claude Code (must reference @AGENTS.md)
 - `README.md` - Project setup and deployment guide
 
 **Spec Organization (Mandatory):**
+
 - `specs/1-specify/` - Contains WHAT we're building (requirements)
 - `specs/2-plan/` - Contains HOW we're building it (architecture)
 - `specs/3-tasks/` - Contains atomic work units with Task IDs
 
 **Implementation Organization (Mandatory):**
+
 - `src/` - Phase I console app only
 - `frontend/` - Phase II+ Next.js application
 - `backend/` - Phase II+ FastAPI application
 - `infra/` - Phase IV+ Kubernetes/Docker/Helm configurations
 
 **Per-Service CLAUDE.md (Required for Phase II+):**
+
 - `frontend/CLAUDE.md` - Frontend-specific patterns and conventions
 - `backend/CLAUDE.md` - Backend-specific patterns and conventions
 
 #### Why This Structure is Mandatory
 
 **Reason 1: Spec-Driven Development**
+
 - Clear separation between WHAT (specify), HOW (plan), and EXECUTE (tasks)
 - Claude Code can navigate specifications hierarchically
 - Every implementation file traces back to a task in `specs/3-tasks/`
 
 **Reason 2: Monorepo Benefits**
+
 - Single context for Claude Code (sees entire project)
 - Cross-cutting changes (frontend + backend) in one session
 - Shared specifications across all services
 - Unified version control and deployment
 
 **Reason 3: Progressive Evolution**
+
 - `src/` contains Phase I (simple start)
 - `frontend/` and `backend/` added in Phase II (features expand)
 - `infra/` added in Phase IV (cloud-native layers)
 - Each phase builds on previous structure without restructuring
 
 **Reason 4: Agent Navigation**
+
 - Claude Code reads root `CLAUDE.md` → references `AGENTS.md`
 - Knows to check `specs/` before implementing
 - Finds service-specific guidance in `frontend/CLAUDE.md` or `backend/CLAUDE.md`
@@ -285,6 +293,7 @@ evolution-of-todo-list-01/
 #### Violation Policy
 
 **Forbidden Actions:**
+
 - ❌ Creating flat `/specs` folder without 1-specify/2-plan/3-tasks structure
 - ❌ Mixing Phase I code with Phase II code in same directory
 - ❌ Creating separate repos for frontend/backend
@@ -292,6 +301,7 @@ evolution-of-todo-list-01/
 - ❌ Skipping `CLAUDE.md` files in service directories
 
 **Required Actions:**
+
 - ✅ Use exact directory names as specified above
 - ✅ Create service-specific `CLAUDE.md` when adding new services
 - ✅ Organize all specs under `specs/1-specify/`, `specs/2-plan/`, `specs/3-tasks/`
@@ -301,6 +311,7 @@ evolution-of-todo-list-01/
 #### Initialization Checklist
 
 Before starting Phase I, verify this structure exists:
+
 ```bash
 # Required root files
 [ ] constitution.md
@@ -332,12 +343,14 @@ Before starting Phase I, verify this structure exists:
 ### 2. Technology Stack (Non-Negotiable)
 
 #### Phase I: Console App
+
 - **Language:** Python 3.13+
 - **Package Manager:** UV
 - **Development:** Claude Code + Spec-Kit Plus
 - **Storage:** In-memory only
 
 #### Phase II: Web Application
+
 - **Frontend:** Next.js 16+ (App Router only)
 - **Backend:** Python FastAPI
 - **ORM:** SQLModel
@@ -345,18 +358,21 @@ Before starting Phase I, verify this structure exists:
 - **Authentication:** Better Auth with JWT
 
 #### Phase III: AI Chatbot
+
 - **Chat UI:** OpenAI ChatKit
 - **AI Framework:** OpenAI Agents SDK
 - **MCP:** Official MCP SDK (Python)
 - **Architecture:** Stateless server, database-persisted state
 
 #### Phase IV: Local Kubernetes
+
 - **Containerization:** Docker (via Docker Desktop)
 - **Orchestration:** Kubernetes (Minikube)
 - **Package Manager:** Helm Charts
 - **AIOps:** kubectl-ai, kagent, Gordon (Docker AI Agent)
 
 #### Phase V: Cloud Deployment
+
 - **Cloud Platform:** Azure (AKS) / Google Cloud (GKE) / Oracle (OKE)
 - **Event Streaming:** Kafka (Confluent/Redpanda Cloud or Strimzi)
 - **Runtime:** Dapr (Distributed Application Runtime)
@@ -367,11 +383,13 @@ Before starting Phase I, verify this structure exists:
 ### 2. Development Workflow (Strict)
 
 **The SDD Loop:**
+
 ```
 Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 ```
 
-#### Rules:
+#### Rules
+
 1. **No Task ID = No Code:** Every code file must reference a task from `speckit.tasks`
 2. **No Manual Coding:** All implementation through Claude Code
 3. **Spec Refinement Over Code Fixes:** If output is wrong, refine the spec, don't patch code
@@ -381,6 +399,7 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 ### 3. Security & Privacy Standards
 
 #### Authentication & Authorization
+
 - **User Isolation:** Every user sees only their own data
 - **JWT Tokens:** Better Auth tokens required for all API calls
 - **Token Validation:** Backend must verify JWT on every request (signature, expiration, audience)
@@ -388,6 +407,7 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 - **Session Management:** Stateless authentication using JWT tokens only
 
 #### Data Protection
+
 - **Secrets Management:** Never commit secrets to Git
 - **Environment Variables:** Use `.env` files (git-ignored)
 - **Database Security:** Connection strings via environment only
@@ -395,6 +415,7 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 - **PII Protection:** Personal data encrypted at rest and in transit
 
 #### API Security
+
 - **401 Unauthorized:** For missing/invalid tokens
 - **403 Forbidden:** For authorization failures
 - **Input Validation:** All user inputs must be validated (schema validation, sanitization)
@@ -404,6 +425,7 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 ### 4. Code Quality Standards
 
 #### Python (Backend)
+
 - **Type Hints:** Required for all function signatures (enforced by mypy)
 - **Async/Await:** Use async functions for I/O operations
 - **Error Handling:** Try/except blocks for external calls (DB, API, Kafka) with proper logging
@@ -411,6 +433,7 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 - **Testing:** Unit tests for business logic (target 50%+ coverage for Phase I, 70%+ for Phase IV/V)
 
 #### TypeScript/JavaScript (Frontend)
+
 - **TypeScript:** Strict mode enabled (strict: true in tsconfig.json)
 - **React Patterns:** Server components by default, client components for interactivity only
 - **API Calls:** Centralized in `/lib/api.ts` with proper error handling
@@ -418,6 +441,7 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 - **Error Boundaries:** Wrap async components in error boundaries
 
 #### General
+
 - **DRY Principle:** Don't Repeat Yourself - extract reusable functions
 - **Single Responsibility:** Each function/component does one thing well
 - **Naming Conventions:**
@@ -437,6 +461,7 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 ### 5. Architecture Patterns
 
 #### Stateless Services
+
 **Principle:** Services must not hold session state in memory.
 
 - **Conversation State:** Persisted to database, not server memory
@@ -447,6 +472,7 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 **Rationale:** Cloud-native applications must scale horizontally and survive failures.
 
 #### Event-Driven Architecture (Phase V)
+
 **Principle:** Services communicate via events, not direct calls.
 
 - **Kafka Topics:** task-events, reminders, task-updates
@@ -457,6 +483,7 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 **Rationale:** Decoupling enables independent scaling and evolution of services.
 
 #### MCP Tool Design
+
 **Principle:** Every AI capability maps to an MCP tool.
 
 - **Stateless Tools:** Tools read/write to database, not memory
@@ -465,6 +492,7 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 - **Composability:** Tools can be chained by agents
 
 **Example Tools:**
+
 - `add_task(user_id, title, description)` → `{task_id, status, title}`
 - `list_tasks(user_id, status)` → `Array<Task>`
 - `complete_task(user_id, task_id)` → `{task_id, status, title}`
@@ -472,17 +500,20 @@ Specify (WHAT) → Plan (HOW) → Tasks (BREAKDOWN) → Implement (CODE)
 ### 6. Database Design Standards
 
 #### Schema Principles
+
 - **User Isolation:** All tables with user data include `user_id` foreign key
 - **Timestamps:** Every table has `created_at` and `updated_at`
 - **Soft Deletes:** Consider `deleted_at` instead of hard deletes for audit trail
 - **Indexing:** Index all foreign keys and frequently queried fields
 
 #### Migration Strategy
+
 - **Version Control:** All schema changes via migration scripts
 - **Backwards Compatible:** Migrations must not break existing deployments
 - **Rollback Plan:** Every migration has a down script
 
 #### Models
+
 ```python
 # Standard pattern for all models
 class Task(SQLModel, table=True):
@@ -498,6 +529,7 @@ class Task(SQLModel, table=True):
 ### 7. API Design Standards
 
 #### RESTful Principles
+
 - **Resource-Based URLs:** `/api/{user_id}/tasks` not `/api/get-tasks`
 - **HTTP Methods:** GET (read), POST (create), PUT (update), DELETE (delete), PATCH (partial)
 - **Status Codes:**
@@ -510,6 +542,7 @@ class Task(SQLModel, table=True):
   - 500 Internal Server Error - Server error
 
 #### Response Format
+
 ```json
 {
   "success": true,
@@ -519,6 +552,7 @@ class Task(SQLModel, table=True):
 ```
 
 Or for errors:
+
 ```json
 {
   "success": false,
@@ -533,12 +567,14 @@ Or for errors:
 ### 8. Cloud-Native Principles (Phase IV & V)
 
 #### Containerization
+
 - **Single Responsibility:** One service per container
 - **Minimal Base Images:** Use alpine or distroless when possible
 - **Health Checks:** Every container exposes `/health` endpoint
 - **Graceful Shutdown:** Handle SIGTERM properly
 
 #### Kubernetes Resources
+
 - **Resource Limits:** All pods have CPU/memory limits
 - **Readiness Probes:** Don't route traffic until service is ready
 - **Liveness Probes:** Restart unhealthy containers
@@ -546,12 +582,14 @@ Or for errors:
 - **Secrets:** For sensitive data only
 
 #### Helm Charts
+
 - **Values:** All environment-specific config in `values.yaml`
 - **Templates:** Parameterize all variable elements
 - **Dependencies:** Declare chart dependencies explicitly
 - **Versioning:** Semantic versioning for chart releases
 
 #### Dapr Integration (Phase V)
+
 - **Pub/Sub:** Use Dapr for Kafka abstraction
 - **State Management:** Optional - prefer direct DB for simplicity
 - **Service Invocation:** Use for cross-service calls
@@ -561,6 +599,7 @@ Or for errors:
 ## Performance & Scalability
 
 ### Response Time Targets
+
 - **Phase I (Console):** < 100ms operations, < 1MB memory usage
 - **Phase II (Web):** < 300ms API responses, 99% uptime
 - **Phase III (AI):** < 2s AI responses, 95% accuracy
@@ -568,6 +607,7 @@ Or for errors:
 - **Phase V (Cloud):** < 200ms responses, 99.9% uptime
 
 ### Scalability Targets
+
 - **Phase I:** Support 1-10 concurrent users
 - **Phase II:** Support 50 concurrent users
 - **Phase III:** Support 100 concurrent users
@@ -577,6 +617,7 @@ Or for errors:
 - **Horizontal Scaling:** All services must scale to N replicas
 
 ### Optimization Strategies
+
 - **Database Indexing:** Index all foreign keys and query filters
 - **Caching:** Consider Redis for hot data (optional advanced feature)
 - **Connection Pooling:** Reuse database connections
@@ -588,20 +629,24 @@ Or for errors:
 ### Required Testing Levels
 
 #### Unit Tests
+
 - **Coverage Target:** 70%+ for business logic
 - **Focus:** Pure functions, business rules, data transformations
 - **Framework:** pytest (Python), Jest (JavaScript)
 
 #### Integration Tests
+
 - **Database:** Test actual DB operations with test database
 - **API:** Test REST endpoints with real HTTP calls
 - **MCP Tools:** Test tool invocation and responses
 
 #### End-to-End Tests (Optional but Recommended)
+
 - **User Flows:** Test complete user journeys
 - **Tools:** Playwright (web), pytest (API)
 
 ### Testing Principles
+
 - **Test Isolation:** Each test is independent
 - **Deterministic:** Same input = same output, always
 - **Fast Feedback:** Tests run in < 30 seconds
@@ -614,12 +659,14 @@ Or for errors:
 All documentation must follow the mandatory monorepo structure defined in Section 1 (Project Structure).
 
 #### Root Level (Mandatory)
+
 - **constitution.md:** This file - the supreme law
 - **AGENTS.md:** Complete agent behavior specification
 - **CLAUDE.md:** Entry point for Claude Code (must contain `@AGENTS.md`)
 - **README.md:** Setup instructions, architecture overview, deployment guide
 
 #### Specs Folder Structure (Mandatory)
+
 The `specs/` directory must follow the three-stage lifecycle:
 
 ```
@@ -645,14 +692,17 @@ The `specs/` directory must follow the three-stage lifecycle:
 ```
 
 #### Service-Specific (Required for Phase II+)
+
 - **frontend/CLAUDE.md:** Frontend-specific patterns (Next.js, React, Tailwind)
 - **backend/CLAUDE.md:** Backend-specific patterns (FastAPI, SQLModel, MCP)
 
 #### Optional but Recommended
+
 - **infra/README.md:** Infrastructure deployment guide
 - **CHANGELOG.md:** Version history and phase completion dates
 
 ### Documentation Standards
+
 - **Markdown Format:** All docs in Markdown
 - **Code Examples:** Include working code snippets with verification
 - **Diagrams:** Use ASCII art or Mermaid for architecture
@@ -668,6 +718,7 @@ The `specs/` directory must follow the three-stage lifecycle:
 When agents reference files in prompts or code comments:
 
 **Specification References:**
+
 ```python
 # Implements: @specs/3-tasks/phase-2/T-103-database-models.md
 # Spec: @specs/1-specify/features/feature-01-task-crud.md
@@ -675,6 +726,7 @@ When agents reference files in prompts or code comments:
 ```
 
 **Code References:**
+
 ```python
 # Frontend API client: @frontend/src/lib/api.ts
 # Backend route handler: @backend/src/routes/tasks.py
@@ -682,6 +734,7 @@ When agents reference files in prompts or code comments:
 ```
 
 **Infrastructure References:**
+
 ```yaml
 # Helm values: @infra/helm/todo-app/values.yaml
 # K8s deployment: @infra/k8s/backend/deployment.yaml
@@ -709,6 +762,7 @@ When agents reference files in prompts or code comments:
 12. **Create service directories without CLAUDE.md** (Phase II+)
 
 ### Code Smells to Avoid
+
 - **God Functions:** Functions > 50 lines
 - **Deep Nesting:** Indentation > 4 levels
 - **Magic Numbers:** Use named constants
@@ -782,6 +836,7 @@ Before submission:
 **Requirement:** Create Claude Code Subagents and Agent Skills
 
 **Constitutional Alignment:**
+
 - Skills must be documented in `/skills` folder
 - Each skill has its own `SKILL.md` with usage examples
 - Skills are composable and single-purpose
@@ -792,6 +847,7 @@ Before submission:
 **Requirement:** Create reusable deployment blueprints via Agent Skills
 
 **Constitutional Alignment:**
+
 - Blueprints are declarative YAML/JSON specifications
 - Blueprints reference this constitution
 - Blueprints are version-controlled
@@ -802,6 +858,7 @@ Before submission:
 **Requirement:** Support Urdu in chatbot
 
 **Constitutional Alignment:**
+
 - i18n libraries only (next-intl for frontend)
 - Language detection from user profile
 - All UI strings externalized to translation files
@@ -812,6 +869,7 @@ Before submission:
 **Requirement:** Add voice input for todo commands
 
 **Constitutional Alignment:**
+
 - Web Speech API for browser-based voice
 - Voice input converts to text before agent processing
 - Same MCP tools handle voice and text equally
@@ -820,18 +878,21 @@ Before submission:
 ## Monitoring & Observability (Phase V)
 
 ### Logging Standards
+
 - **Structured Logging:** JSON format
 - **Log Levels:** DEBUG, INFO, WARNING, ERROR, CRITICAL
 - **Correlation IDs:** Track requests across services
 - **PII Redaction:** Never log passwords, tokens, or sensitive data
 
 ### Metrics to Track
+
 - **Request Rate:** Requests per second
 - **Error Rate:** Errors per second
 - **Latency:** p50, p95, p99 response times
 - **Resource Usage:** CPU, memory, disk
 
 ### Alerting (Production)
+
 - **Service Down:** Immediate alert
 - **Error Rate Spike:** Alert if > 5% errors
 - **Latency Degradation:** Alert if p95 > 500ms
@@ -839,12 +900,14 @@ Before submission:
 ## Verification and Compliance
 
 ### Verification Protocols
+
 - **Performance**: Automated load testing with tools like Artillery or JMeter
 - **Security**: Static analysis tools (Bandit for Python, ESLint for JS)
 - **Code Quality**: Linting and formatting enforcement (Black, isort, prettier)
 - **Compliance**: Pre-commit hooks to verify constitutional adherence
 
 ### Quality Over Speed Guidelines
+
 - **Code Review**: All changes require peer review before merging
 - **Testing**: Features must pass all tests before release
 - **Documentation**: Code must be documented before merging
@@ -857,12 +920,14 @@ Before submission:
   - **Accessibility**: WCAG 2.1 AA compliance for web interfaces
 
 ### Exception Handling
+
 - **Technical Debt**: Document and track when standards cannot be met
 - **Emergency Changes**: Rapid response procedures for critical issues
 - **Escalation**: Clear process for requesting constitutional exceptions
 - **Rollback**: Defined procedures for reverting non-compliant changes
 
 ### Rollback and Recovery Procedures
+
 - **Failed Deployments**: Automatic rollback within 5 minutes of deployment
 - **Performance Degradation**: Rollback if response times exceed 200% of baseline
 - **Security Incidents**: Immediate rollback and incident response procedures
@@ -870,12 +935,14 @@ Before submission:
 - **Service Availability**: Rollback if uptime drops below 99% threshold
 
 ### Phase-Specific Quality Targets
+
 - **Phase I**: 50% test coverage, <500ms response time, 10 concurrent users
 - **Phase II**: 60% test coverage, <300ms response time, 100 concurrent users
 - **Phase III**: 65% test coverage, <200ms response time, 500 concurrent users
 - **Phase IV/V**: 70% test coverage, <200ms response time, 1000+ concurrent users
 
 ### Automated Compliance Verification
+
 - **Pre-commit Hooks**: Use pre-commit framework with specific checks:
   - File structure validation against monorepo requirements
   - Import statement verification
@@ -900,6 +967,7 @@ This constitution is a living document. As the project evolves through phases, w
 5. **Security by design** - Security considerations in every architectural decision
 
 ### Sustainability Standards
+
 - **Resource Efficiency**: Optimize for minimal CPU/memory usage
 - **Green Deployment**: Use cloud providers with renewable energy commitments
 - **Efficient Algorithms**: Prioritize algorithmic efficiency over quick fixes
@@ -908,7 +976,7 @@ This constitution is a living document. As the project evolves through phases, w
 Every line of code, every architectural decision, every deployment strategy must honor these principles.
 
 **Version History:**
-- v1.0 (2026-02-04): Initial constitution for Hackathon II
 
+- v1.0 (2026-02-04): Initial constitution for Hackathon II
 
 **Version**: 1.0.1 | **Ratified**: 2026-02-04 | **Last Amended**: 2026-02-04

@@ -1,45 +1,52 @@
 ---
-id: {{ID}}
-title: {{TITLE}}
-stage: {{STAGE}}
-date: {{DATE_ISO}}
-surface: {{SURFACE}}
-model: {{MODEL}}
-feature: {{FEATURE}}
-branch: {{BRANCH}}
-user: {{USER}}
-command: {{COMMAND}}
-labels: [{{LABELS}}]
+id: 0001
+title: ADR Review Created
+stage: general
+date: 2026-02-05
+surface: agent
+model: claude-sonnet-4-5-20250929
+feature: none
+branch: main
+user: metachemist
+command: sp.adr
+labels: [architecture, decision, documentation]
 links:
-  spec: {{LINKS_SPEC}}
-  ticket: {{LINKS_TICKET}}
-  adr: {{LINKS_ADR}}
-  pr: {{LINKS_PR}}
+  spec: "@specs/1-specify/features/feature-01-task-crud.md"
+  ticket: null
+  adr: "@history/adr/"
+  pr: null
 files:
-{{FILES_YAML}}
+ - "@history/adr/0001-console-application-technology-stack.md"
+ - "@history/adr/0002-command-line-interface-design.md"
+ - "@history/adr/0003-data-validation-and-error-handling-strategy.md"
 tests:
-{{TESTS_YAML}}
+ - "ADR creation process verified"
 ---
 
 ## Prompt
 
-{{PROMPT_TEXT}}
+sp.adr
 
 ## Response snapshot
 
-{{RESPONSE_TEXT}}
+Created 3 ADRs for the Phase 1 Console App:
+- ADR-0001: Console Application Technology Stack
+- ADR-0002: Command-Line Interface Design
+- ADR-0003: Data Validation and Error Handling Strategy
+
+Each ADR follows the template with proper sections for decision, consequences, alternatives, and references.
 
 ## Outcome
 
-- ✅ Impact: {{OUTCOME_IMPACT}}
-- 🧪 Tests: {{TESTS_SUMMARY}}
-- 📁 Files: {{FILES_SUMMARY}}
-- 🔁 Next prompts: {{NEXT_PROMPTS}}
-- 🧠 Reflection: {{REFLECTION_NOTE}}
+- ✅ Impact: Architectural decisions documented for Phase 1 console app
+- 🧪 Tests: ADR creation process verified
+- 📁 Files: Created 3 ADR files in history/adr/ directory
+- 🔁 Next prompts: Ready for task breakdown
+- 🧠 Reflection: ADRs provide traceability for important technical decisions
 
 ## Evaluation notes (flywheel)
 
-- Failure modes observed: {{FAILURE_MODES}}
-- Graders run and results (PASS/FAIL): {{GRADER_RESULTS}}
-- Prompt variant (if applicable): {{PROMPT_VARIANT_ID}}
-- Next experiment (smallest change to try): {{NEXT_EXPERIMENT}}
+- Failure modes observed: None
+- Graders run and results (PASS/FAIL): PASS - All ADRs follow template correctly
+- Prompt variant (if applicable): N/A
+- Next experiment (smallest change to try): N/A
