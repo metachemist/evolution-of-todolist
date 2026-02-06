@@ -5,17 +5,18 @@ Interactive TUI for the todo application using Rich for tables and styling.
 
 import os
 import sys
-import inspect
-# Get the directory containing this file and add src to the path
-current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir)
-
 from typing import Optional
 import typer
 from rich.console import Console
 from rich.table import Table
 from rich.prompt import Prompt, IntPrompt
+
+# Add the src directory to the path so we can import from core
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
 from core.task_manager import TaskManager
 from core.models import Task
 

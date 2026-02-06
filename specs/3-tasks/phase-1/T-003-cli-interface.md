@@ -22,9 +22,13 @@ Based on: `@specs/2-plan/phase-1-console.md` - CLI Module section
 - T-002: Core Logic (Task Model and TaskManager)
 
 ## Acceptance Criteria
-- [ ] All CLI commands (add, list, update, complete, delete) are implemented
-- [ ] Both long and short form options work correctly (--status/-s, --title/-t, --description/-d, --help/-h)
-- [ ] Error handling provides user-friendly messages
-- [ ] Proper exit codes are returned (0=success, 1=general error, 2=usage error)
-- [ ] Human-readable timestamps are displayed when listing tasks
-- [ ] Help text is available via --help or -h
+- [x] All CLI commands (add, list, update, complete, delete) are implemented
+- [x] Both long and short form options work correctly (--status/-s, --title/-t, --description/-d, --help/-h)
+- [x] Error handling provides user-friendly messages
+- [x] Proper exit codes are returned (0=success, 1=general error, 2=usage error)
+- [x] Human-readable timestamps are displayed when listing tasks
+- [x] Help text is available via --help or -h
+
+## Status
+- Completed: 2026-02-05
+- Verified: All CLI commands functional with proper options and error handling
