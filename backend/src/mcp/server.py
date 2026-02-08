@@ -2,12 +2,182 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import Dict, Any, Optional
 from datetime import datetime
 from sqlmodel import Session, select
-from ..models import Task, TaskCreate, TaskUpdate, TaskPublic, User
+from ..models import Task, TaskCreate, TaskUpdate, TaskPublic, User, UserCreate
 from ..db import get_session
-from ..auth import get_current_user
+from ..auth import get_current_user, get_password_hash, authenticate_user, create_access_token
+from ..auth.auth_handler import verify_password
 
 
 router = APIRouter(prefix="/mcp/tools", tags=["mcp-tools"])
+
+
+@router.post("/register_user")
+async def mcp_register_user(
+    email: str,
+    password: str,
+    first_name: Optional[str] = None,
+    last_name: Optional[str] = None,
+    session: Session = Depends(get_session)
+) -> Dict[str, Any]:
+    """
+    MCP tool for registering a new user.
+
+    Args:
+        email: The email address for the new user
+        password: The password for the new user
+        first_name: Optional first name for the user
+        last_name: Optional last name for the user
+        session: Database session
+
+    Returns:
+        Dictionary with success status and user data
+    """
+    # Validate input
+    if not email or "@" not in email:
+        raise HTTPException(status_code=400, detail="Valid email is required")
+
+    if len(password) < 8 or len(password) > 20 or not any(c in "!@#$%^&.*" for c in password):
+        raise HTTPException(
+            status_code=400, 
+            detail="Password must be 8-20 characters long and contain at least one special character"
+        )
+
+    # Check if user already exists
+    existing_user_statement = select(User).where(User.email == email)
+    existing_user_result = await session.execute(existing_user_statement)
+    existing_user = existing_user_result.first()
+
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Create new user
+    hashed_password = get_password_hash(password)
+    user = User(
+        email=email,
+        hashed_password=hashed_password,
+        first_name=first_name,
+        last_name=last_name
+    )
+
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+
+    # Generate JWT token
+    access_token = create_access_token(data={"sub": user.email})
+
+    # Prepare response
+    response_data = {
+        "success": True,
+        "data": {
+            "id": user.id,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "created_at": user.created_at.isoformat(),
+            "updated_at": user.updated_at.isoformat(),
+            "token": access_token
+        },
+        "metadata": {
+            "tool_name": "register_user",
+            "timestamp": datetime.utcnow().isoformat(),
+            "execution_time_ms": 0  # Placeholder, actual timing would be measured
+        }
+    }
+
+    return response_data
+
+
+@router.post("/authenticate_user")
+async def mcp_authenticate_user(
+    email: str,
+    password: str,
+    session: Session = Depends(get_session)
+) -> Dict[str, Any]:
+    """
+    MCP tool for authenticating a user.
+
+    Args:
+        email: The email address of the user
+        password: The password of the user
+        session: Database session
+
+    Returns:
+        Dictionary with success status and user data
+    """
+    # Validate input
+    if not email or "@" not in email:
+        raise HTTPException(status_code=400, detail="Valid email is required")
+
+    if not password:
+        raise HTTPException(status_code=400, detail="Password is required")
+
+    # Look up user by email
+    user_statement = select(User).where(User.email == email)
+    user_result = await session.execute(user_statement)
+    user = user_result.first()
+
+    # Verify user exists and password is correct
+    if not user or not verify_password(password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    # Generate JWT token
+    access_token = create_access_token(data={"sub": user.email})
+
+    # Prepare response
+    response_data = {
+        "success": True,
+        "data": {
+            "id": user.id,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "created_at": user.created_at.isoformat(),
+            "updated_at": user.updated_at.isoformat(),
+            "token": access_token
+        },
+        "metadata": {
+            "tool_name": "authenticate_user",
+            "timestamp": datetime.utcnow().isoformat(),
+            "execution_time_ms": 0  # Placeholder, actual timing would be measured
+        }
+    }
+
+    return response_data
+
+
+@router.post("/get_current_user")
+async def mcp_get_current_user(
+    current_user: User = Depends(get_current_user)
+) -> Dict[str, Any]:
+    """
+    MCP tool for retrieving the current authenticated user's information.
+
+    Args:
+        current_user: The authenticated user (obtained via JWT token)
+
+    Returns:
+        Dictionary with success status and user data
+    """
+    # Prepare response
+    response_data = {
+        "success": True,
+        "data": {
+            "id": current_user.id,
+            "email": current_user.email,
+            "first_name": current_user.first_name,
+            "last_name": current_user.last_name,
+            "created_at": current_user.created_at.isoformat(),
+            "updated_at": current_user.updated_at.isoformat()
+        },
+        "metadata": {
+            "tool_name": "get_current_user",
+            "timestamp": datetime.utcnow().isoformat(),
+            "execution_time_ms": 0  # Placeholder, actual timing would be measured
+        }
+    }
+
+    return response_data
 
 
 @router.post("/create_task")

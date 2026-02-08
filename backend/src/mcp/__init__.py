@@ -13,6 +13,9 @@ from ..models import User
 from ..auth import get_current_user
 from ..db import get_session
 from .server import (
+    mcp_register_user,
+    mcp_authenticate_user,
+    mcp_get_current_user,
     mcp_create_task,
     mcp_get_user_tasks,
     mcp_get_task,
