@@ -2,7 +2,7 @@
 Task model representing a single item in the user's todo list.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 
@@ -21,7 +21,7 @@ class Task:
         self.title = self._validate_title(title)
         self.description = self._validate_description(description)
         self.status = status
-        self.created_at = datetime.now()
+        self.created_at = datetime.now(timezone.utc)
 
     def _validate_title(self, title: str) -> str:
         """Validate title length and non-empty requirement."""
@@ -58,7 +58,7 @@ class Task:
             "title": self.title,
             "description": self.description,
             "status": self.status,
-            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            "created_at": self.created_at.isoformat()
         }
 
     def __str__(self) -> str:
