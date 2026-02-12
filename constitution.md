@@ -74,12 +74,27 @@ evolution-of-todo-list-01/
 │   │
 │   ├── 1-specify/                # STEP 1: WHAT (Requirements & Context)
 │   │   ├── system-overview.md    # High-level goals
-│   │   ├── features/             # Feature Requirements
+│   │   ├── phase-1/              # Phase I Requirements
 │   │   │   ├── feature-01-task-crud.md
 │   │   │   ├── feature-02-auth.md
-│   │   │   ├── feature-03-chatbot.md
-│   │   │   ├── feature-04-recurring-tasks.md
-│   │   │   └── feature-05-reminders.md
+│   │   │   └── feature-03-console-interface.md
+│   │   ├── phase-2/              # Phase II Requirements
+│   │   │   ├── feature-04-web-interface.md
+│   │   │   ├── feature-05-api-endpoints.md
+│   │   │   ├── feature-06-database-models.md
+│   │   │   └── feature-07-authentication.md
+│   │   ├── phase-3/              # Phase III Requirements
+│   │   │   ├── feature-08-ai-chatbot.md
+│   │   │   ├── feature-09-mcp-tools.md
+│   │   │   └── feature-10-conversation-state.md
+│   │   ├── phase-4/              # Phase IV Requirements
+│   │   │   ├── feature-11-containerization.md
+│   │   │   ├── feature-12-kubernetes-deployment.md
+│   │   │   └── feature-13-helm-charts.md
+│   │   ├── phase-5/              # Phase V Requirements
+│   │   │   ├── feature-14-cloud-deployment.md
+│   │   │   ├── feature-15-kafka-integration.md
+│   │   │   └── feature-16-dapr-runtime.md
 │   │   ├── domain/               # Domain Rules & Entities
 │   │   │   ├── task-entity.md
 │   │   │   ├── user-entity.md
@@ -90,46 +105,98 @@ evolution-of-todo-list-01/
 │   │       └── journey-03-advanced-features.md
 │   │
 │   ├── 2-plan/                   # STEP 2: HOW (Architecture & Design)
-│   │   ├── phase-1-console.md
-│   │   ├── phase-2-fullstack.md
-│   │   ├── phase-3-ai-chatbot.md
-│   │   ├── phase-4-kubernetes.md
-│   │   ├── phase-5-cloud.md
-│   │   ├── api-specs/            # API Contracts (OpenAPI/MCP)
-│   │   │   ├── rest-endpoints.md
-│   │   │   ├── mcp-tools.md
-│   │   │   └── websocket-events.md
-│   │   ├── db-schema/            # Data Models (SQLModel)
-│   │   │   ├── schema-v1.md
-│   │   │   ├── schema-v2.md
-│   │   │   └── migrations.md
-│   │   └── ui-design/            # Component Architecture
-│   │       ├── components.md
-│   │       ├── pages.md
-│   │       └── chatkit-integration.md
+│   │   ├── phase-1/              # Phase I Architecture
+│   │   │   ├── phase-1-console.md
+│   │   │   ├── api-specs/        # API Contracts (OpenAPI/MCP)
+│   │   │   │   ├── rest-endpoints.md
+│   │   │   │   ├── mcp-tools.md
+│   │   │   │   └── websocket-events.md
+│   │   │   ├── db-schema/        # Data Models (SQLModel)
+│   │   │   │   ├── schema-v1.md
+│   │   │   │   ├── schema-v2.md
+│   │   │   │   └── migrations.md
+│   │   │   └── ui-design/        # Component Architecture
+│   │   │       ├── components.md
+│   │   │       ├── pages.md
+│   │   │       └── chatkit-integration.md
+│   │   ├── phase-2/              # Phase II Architecture
+│   │   │   ├── phase-2-fullstack.md
+│   │   │   ├── api-specs/
+│   │   │   │   ├── rest-endpoints.md
+│   │   │   │   ├── mcp-tools.md
+│   │   │   │   └── websocket-events.md
+│   │   │   ├── db-schema/
+│   │   │   │   ├── schema-v1.md
+│   │   │   │   ├── schema-v2.md
+│   │   │   │   └── migrations.md
+│   │   │   └── ui-design/
+│   │   │       ├── components.md
+│   │   │       ├── pages.md
+│   │   │       └── chatkit-integration.md
+│   │   ├── phase-3/              # Phase III Architecture
+│   │   │   ├── phase-3-ai-chatbot.md
+│   │   │   ├── api-specs/
+│   │   │   │   ├── rest-endpoints.md
+│   │   │   │   ├── mcp-tools.md
+│   │   │   │   └── websocket-events.md
+│   │   │   ├── db-schema/
+│   │   │   │   ├── schema-v1.md
+│   │   │   │   ├── schema-v2.md
+│   │   │   │   └── migrations.md
+│   │   │   └── ui-design/
+│   │   │       ├── components.md
+│   │   │       ├── pages.md
+│   │   │       └── chatkit-integration.md
+│   │   ├── phase-4/              # Phase IV Architecture
+│   │   │   ├── phase-4-kubernetes.md
+│   │   │   ├── api-specs/
+│   │   │   │   ├── rest-endpoints.md
+│   │   │   │   ├── mcp-tools.md
+│   │   │   │   └── websocket-events.md
+│   │   │   ├── db-schema/
+│   │   │   │   ├── schema-v1.md
+│   │   │   │   ├── schema-v2.md
+│   │   │   │   └── migrations.md
+│   │   │   └── ui-design/
+│   │   │       ├── components.md
+│   │   │       ├── pages.md
+│   │   │       └── chatkit-integration.md
+│   │   └── phase-5/              # Phase V Architecture
+│   │       ├── phase-5-cloud.md
+│   │       ├── api-specs/
+│   │       │   ├── rest-endpoints.md
+│   │       │   ├── mcp-tools.md
+│   │       ├── db-schema/
+│   │       │   ├── schema-v1.md
+│   │       │   ├── schema-v2.md
+│   │       │   └── migrations.md
+│   │       └── ui-design/
+│   │           ├── components.md
+│   │           ├── pages.md
+│   │           └── chatkit-integration.md
 │   │
 │   └── 3-tasks/                  # STEP 3: EXECUTE (Atomic Units)
-│       ├── phase-1/
+│       ├── phase-1/              # Phase I Tasks
 │       │   ├── T-001-setup-project.md
 │       │   ├── T-002-core-logic.md
 │       │   ├── T-003-cli-interface.md
 │       │   └── T-004-testing.md
-│       ├── phase-2/
+│       ├── phase-2/              # Phase II Tasks
 │       │   ├── T-101-nextjs-setup.md
 │       │   ├── T-102-fastapi-setup.md
 │       │   ├── T-103-database-models.md
 │       │   ├── T-104-auth-setup.md
 │       │   └── ...
-│       ├── phase-3/
+│       ├── phase-3/              # Phase III Tasks
 │       │   ├── T-201-mcp-server.md
 │       │   ├── T-202-agents-sdk.md
 │       │   ├── T-203-chatkit-ui.md
 │       │   └── ...
-│       ├── phase-4/
+│       ├── phase-4/              # Phase IV Tasks
 │       │   ├── T-301-dockerfiles.md
 │       │   ├── T-302-helm-charts.md
 │       │   └── ...
-│       └── phase-5/
+│       └── phase-5/              # Phase V Tasks
 │           ├── T-401-kafka-setup.md
 │           ├── T-402-dapr-integration.md
 │           └── ...
@@ -245,9 +312,28 @@ evolution-of-todo-list-01/
 
 **Spec Organization (Mandatory):**
 
-- `specs/1-specify/` - Contains WHAT we're building (requirements)
-- `specs/2-plan/` - Contains HOW we're building it (architecture)
-- `specs/3-tasks/` - Contains atomic work units with Task IDs
+- `specs/1-specify/` - Contains WHAT we're building (requirements by phase)
+  - `specs/1-specify/phase-1/` - Phase I requirements (console app)
+  - `specs/1-specify/phase-2/` - Phase II requirements (web app)
+  - `specs/1-specify/phase-3/` - Phase III requirements (AI chatbot)
+  - `specs/1-specify/phase-4/` - Phase IV requirements (Kubernetes)
+  - `specs/1-specify/phase-5/` - Phase V requirements (cloud)
+  - `specs/1-specify/domain/` - Domain rules and entities
+  - `specs/1-specify/user-journeys/` - User stories
+
+- `specs/2-plan/` - Contains HOW we're building it (architecture by phase)
+  - `specs/2-plan/phase-1/` - Phase I architecture
+  - `specs/2-plan/phase-2/` - Phase II architecture
+  - `specs/2-plan/phase-3/` - Phase III architecture
+  - `specs/2-plan/phase-4/` - Phase IV architecture
+  - `specs/2-plan/phase-5/` - Phase V architecture
+
+- `specs/3-tasks/` - Contains atomic work units with Task IDs (by phase)
+  - `specs/3-tasks/phase-1/` - Phase I tasks
+  - `specs/3-tasks/phase-2/` - Phase II tasks
+  - `specs/3-tasks/phase-3/` - Phase III tasks
+  - `specs/3-tasks/phase-4/` - Phase IV tasks
+  - `specs/3-tasks/phase-5/` - Phase V tasks
 
 **Implementation Organization (Mandatory):**
 
@@ -522,8 +608,8 @@ class Task(SQLModel, table=True):
     title: str = Field(max_length=200)
     description: str | None = Field(default=None, max_length=1000)
     completed: bool = Field(default=False)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 ```
 
 ### 7. API Design Standards
@@ -671,24 +757,133 @@ The `specs/` directory must follow the three-stage lifecycle:
 
 ```
 /specs
-  ├── 1-specify/              # WHAT we're building
-  │   ├── system-overview.md
-  │   ├── features/
-  │   ├── domain/
-  │   └── user-journeys/
+  ├── 1-specify/              # WHAT we're building (by phase)
+  │   ├── phase-1/           # Phase I requirements
+  │   │   ├── feature-01-task-crud.md
+  │   │   ├── feature-02-auth.md
+  │   │   └── feature-03-console-interface.md
+  │   ├── phase-2/           # Phase II requirements
+  │   │   ├── feature-04-web-interface.md
+  │   │   ├── feature-05-api-endpoints.md
+  │   │   ├── feature-06-database-models.md
+  │   │   └── feature-07-authentication.md
+  │   ├── phase-3/           # Phase III requirements
+  │   │   ├── feature-08-ai-chatbot.md
+  │   │   ├── feature-09-mcp-tools.md
+  │   │   └── feature-10-conversation-state.md
+  │   ├── phase-4/           # Phase IV requirements
+  │   │   ├── feature-11-containerization.md
+  │   │   ├── feature-12-kubernetes-deployment.md
+  │   │   └── feature-13-helm-charts.md
+  │   ├── phase-5/           # Phase V requirements
+  │   │   ├── feature-14-cloud-deployment.md
+  │   │   ├── feature-15-kafka-integration.md
+  │   │   └── feature-16-dapr-runtime.md
+  │   ├── domain/            # Domain rules and entities
+  │   │   ├── task-entity.md
+  │   │   ├── user-entity.md
+  │   │   └── conversation-entity.md
+  │   └── user-journeys/     # User stories
+  │       ├── journey-01-basic-todo.md
+  │       ├── journey-02-ai-chat.md
+  │       └── journey-03-advanced-features.md
   │
-  ├── 2-plan/                 # HOW we're building it
-  │   ├── phase-N-name.md     (one per phase)
-  │   ├── api-specs/
-  │   ├── db-schema/
-  │   └── ui-design/
+  ├── 2-plan/                 # HOW we're building it (by phase)
+  │   ├── phase-1/           # Phase I architecture
+  │   │   ├── phase-1-console.md
+  │   │   ├── api-specs/     # API Contracts (OpenAPI/MCP)
+  │   │   │   ├── rest-endpoints.md
+  │   │   │   ├── mcp-tools.md
+  │   │   │   └── websocket-events.md
+  │   │   ├── db-schema/     # Data Models (SQLModel)
+  │   │   │   ├── schema-v1.md
+  │   │   │   ├── schema-v2.md
+  │   │   │   └── migrations.md
+  │   │   └── ui-design/     # Component Architecture
+  │   │       ├── components.md
+  │   │       ├── pages.md
+  │   │       └── chatkit-integration.md
+  │   ├── phase-2/           # Phase II architecture
+  │   │   ├── phase-2-fullstack.md
+  │   │   ├── api-specs/
+  │   │   │   ├── rest-endpoints.md
+  │   │   │   ├── mcp-tools.md
+  │   │   │   └── websocket-events.md
+  │   │   ├── db-schema/
+  │   │   │   ├── schema-v1.md
+  │   │   │   ├── schema-v2.md
+  │   │   │   └── migrations.md
+  │   │   └── ui-design/
+  │   │       ├── components.md
+  │   │       ├── pages.md
+  │   │       └── chatkit-integration.md
+  │   ├── phase-3/           # Phase III architecture
+  │   │   ├── phase-3-ai-chatbot.md
+  │   │   ├── api-specs/
+  │   │   │   ├── rest-endpoints.md
+  │   │   │   ├── mcp-tools.md
+  │   │   │   └── websocket-events.md
+  │   │   ├── db-schema/
+  │   │   │   ├── schema-v1.md
+  │   │   │   ├── schema-v2.md
+  │   │   │   └── migrations.md
+  │   │   └── ui-design/
+  │   │       ├── components.md
+  │   │       ├── pages.md
+  │   │       └── chatkit-integration.md
+  │   ├── phase-4/           # Phase IV architecture
+  │   │   ├── phase-4-kubernetes.md
+  │   │   ├── api-specs/
+  │   │   │   ├── rest-endpoints.md
+  │   │   │   ├── mcp-tools.md
+  │   │   │   └── websocket-events.md
+  │   │   ├── db-schema/
+  │   │   │   ├── schema-v1.md
+  │   │   │   ├── schema-v2.md
+  │   │   │   └── migrations.md
+  │   │   └── ui-design/
+  │   │       ├── components.md
+  │   │       ├── pages.md
+  │   │       └── chatkit-integration.md
+  │   └── phase-5/           # Phase V architecture
+  │       ├── phase-5-cloud.md
+  │       ├── api-specs/
+  │       │   ├── rest-endpoints.md
+  │       │   ├── mcp-tools.md
+  │       ├── db-schema/
+  │       │   ├── schema-v1.md
+  │       │   ├── schema-v2.md
+  │       │   └── migrations.md
+  │       └── ui-design/
+  │           ├── components.md
+  │           ├── pages.md
+  │           └── chatkit-integration.md
   │
-  └── 3-tasks/                # Atomic work units
-      ├── phase-1/
-      ├── phase-2/
-      ├── phase-3/
-      ├── phase-4/
-      └── phase-5/
+  └── 3-tasks/                # Atomic work units (by phase)
+      ├── phase-1/           # Phase I tasks
+      │   ├── T-001-setup-project.md
+      │   ├── T-002-core-logic.md
+      │   ├── T-003-cli-interface.md
+      │   └── T-004-testing.md
+      ├── phase-2/           # Phase II tasks
+      │   ├── T-101-nextjs-setup.md
+      │   ├── T-102-fastapi-setup.md
+      │   ├── T-103-database-models.md
+      │   ├── T-104-auth-setup.md
+      │   └── ...
+      ├── phase-3/           # Phase III tasks
+      │   ├── T-201-mcp-server.md
+      │   ├── T-202-agents-sdk.md
+      │   ├── T-203-chatkit-ui.md
+      │   └── ...
+      ├── phase-4/           # Phase IV tasks
+      │   ├── T-301-dockerfiles.md
+      │   ├── T-302-helm-charts.md
+      │   └── ...
+      └── phase-5/           # Phase V tasks
+          ├── T-401-kafka-setup.md
+          ├── T-402-dapr-integration.md
+          └── ...
 ```
 
 #### Service-Specific (Required for Phase II+)
@@ -973,7 +1168,6 @@ This constitution is a living document. As the project evolves through phases, w
 - **Efficient Algorithms**: Prioritize algorithmic efficiency over quick fixes
 - **Environmental Impact**: Monitor and minimize resource consumption
 
-Every line of code, every architectural decision, every deployment strategy must honor these principles.
 
 **Version History:**
 
