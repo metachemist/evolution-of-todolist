@@ -2,7 +2,7 @@
 
 **Feature Branch**: `1-fastapi-todo-backend`
 **Created**: 2026-02-11
-**Status**: Draft
+**Status**: In Progress
 **Input**: User description: "Build a persistent, multi-user Todo REST API that allows users to manage their personal tasks with proper access controls."
 
 ## Constitutional Compliance
@@ -90,6 +90,9 @@ When users encounter errors (validation, authentication, etc.), the system shoul
 - **FR-011**: System MUST store user and task data persistently
 - **FR-012**: System MUST automatically assign the authenticated user as the owner when creating tasks
 - **FR-013**: System MUST update timestamps when tasks are created or modified
+- **FR-014**: System MUST provide user registration endpoint (POST /api/auth/register) that creates a user and returns a JWT token
+- **FR-015**: System MUST provide user login endpoint (POST /api/auth/login) that validates credentials and returns a JWT token
+- **FR-016**: System MUST support pagination on task list endpoints with configurable skip/limit (default 20, max 100)
 
 ### Technical Constraints
 
@@ -123,7 +126,6 @@ When users encounter errors (validation, authentication, etc.), the system shoul
 
 The following features are explicitly NOT part of this specification and will be addressed in future iterations:
 
-- User authentication and registration (login, password management, token issuance)
 - Advanced task features (due dates, priorities, categories, tags)
 - Task sharing between users
 - Email notifications or reminders

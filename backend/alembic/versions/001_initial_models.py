@@ -7,8 +7,6 @@ Create Date: 2026-02-11 12:00:00.000000
 """
 from alembic import op
 import sqlalchemy as sa
-import sqlmodel.sql.sqltypes
-from uuid import uuid4
 from datetime import datetime
 
 # revision identifiers
@@ -21,7 +19,7 @@ depends_on = None
 def upgrade() -> None:
     # Create user table
     op.create_table('user',
-        sa.Column('id', sqlmodel.sql.sqltypes.GUID(), nullable=False),
+        sa.Column('id', sa.Uuid(), nullable=False),
         sa.Column('email', sa.String(length=255), nullable=False),
         sa.Column('hashed_password', sa.String(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
@@ -32,13 +30,13 @@ def upgrade() -> None:
     
     # Create task table
     op.create_table('task',
-        sa.Column('id', sqlmodel.sql.sqltypes.GUID(), nullable=False),
+        sa.Column('id', sa.Uuid(), nullable=False),
         sa.Column('title', sa.String(length=255), nullable=False),
         sa.Column('description', sa.String(length=5000), nullable=True),
         sa.Column('is_completed', sa.Boolean(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=False),
-        sa.Column('owner_id', sqlmodel.sql.sqltypes.GUID(), nullable=False),
+        sa.Column('owner_id', sa.Uuid(), nullable=False),
         sa.ForeignKeyConstraint(['owner_id'], ['user.id'], ),
         sa.PrimaryKeyConstraint('id')
     )

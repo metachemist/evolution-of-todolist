@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import AsyncGenerator
 from src.database import get_db_session
 from sqlmodel.ext.asyncio.session import AsyncSession
-from src.utils.helpers import ErrorResponse, create_error_response
+from src.utils.helpers import create_error_response
 from fastapi.responses import JSONResponse
 
 
@@ -59,7 +59,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content=error_response.dict()
+        content=error_response.model_dump()
     )
 
 
@@ -78,7 +78,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     
     return JSONResponse(
         status_code=exc.status_code,
-        content=error_response.dict()
+        content=error_response.model_dump()
     )
 
 
@@ -104,7 +104,9 @@ def include_routers():
     Function to include all routers to avoid circular imports.
     """
     from src.routes.tasks import router as tasks_router
+    from src.routes.auth import router as auth_router
     app.include_router(tasks_router, prefix="/api/{user_id}", tags=["tasks"])
+    app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 
 
 # Call the function to include routers

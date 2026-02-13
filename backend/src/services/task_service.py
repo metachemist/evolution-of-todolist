@@ -1,10 +1,10 @@
-from sqlmodel import select, func
+from datetime import datetime
+
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 from ..models.task import Task
-from ..models.user import User
-from ..schemas.task import TaskCreate, TaskUpdate
 
 
 async def create_task(db: AsyncSession, user_id: str, title: str, description: str | None) -> Task:
@@ -24,11 +24,17 @@ async def create_task(db: AsyncSession, user_id: str, title: str, description: s
     return task
 
 
-async def get_tasks(db: AsyncSession, user_id: str) -> List[Task]:
+async def get_tasks(db: AsyncSession, user_id: str, skip: int = 0, limit: int = 20) -> List[Task]:
     """
-    Get all tasks for the specified user.
+    Get paginated tasks for the specified user, ordered by newest first.
     """
-    statement = select(Task).where(Task.owner_id == UUID(user_id))
+    statement = (
+        select(Task)
+        .where(Task.owner_id == UUID(user_id))
+        .order_by(Task.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+    )
     result = await db.exec(statement)
     return result.all()
 
@@ -46,14 +52,15 @@ async def get_task_by_id(db: AsyncSession, user_id: str, task_id: str) -> Task |
 
 
 async def update_task(
-    db: AsyncSession, 
-    user_id: str, 
-    task_id: str, 
-    title: str, 
-    description: str | None
+    db: AsyncSession,
+    user_id: str,
+    task_id: str,
+    title: str | None,
+    description: str | None,
 ) -> Task | None:
     """
     Update a specific task for the specified user.
+    Only updates fields that are not None.
     """
     statement = select(Task).where(
         Task.id == UUID(task_id),
@@ -61,17 +68,19 @@ async def update_task(
     )
     result = await db.exec(statement)
     task = result.first()
-    
+
     if not task:
         return None
-    
-    task.title = title
-    task.description = description
-    task.updated_at = func.now()
-    
+
+    if title is not None:
+        task.title = title
+    if description is not None:
+        task.description = description
+    task.updated_at = datetime.utcnow()
+
     await db.commit()
     await db.refresh(task)
-    
+
     return task
 
 
@@ -110,7 +119,7 @@ async def toggle_completion(db: AsyncSession, user_id: str, task_id: str) -> Tas
         return None
     
     task.is_completed = not task.is_completed
-    task.updated_at = func.now()
+    task.updated_at = datetime.utcnow()
     
     await db.commit()
     await db.refresh(task)

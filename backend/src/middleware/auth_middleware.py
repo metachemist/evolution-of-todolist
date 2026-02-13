@@ -1,7 +1,7 @@
 from fastapi import Request, HTTPException, status
 from fastapi.responses import JSONResponse
 from typing import Optional
-import jwt
+from jose import jwt, JWTError, ExpiredSignatureError
 import os
 
 
@@ -15,7 +15,10 @@ class AuthMiddleware:
 
     async def __call__(self, request: Request, call_next):
         # Define public endpoints that don't require authentication
-        public_endpoints = ["/", "/health", "/docs", "/redoc", "/openapi.json"]
+        public_endpoints = [
+            "/", "/health", "/docs", "/redoc", "/openapi.json",
+            "/api/auth/register", "/api/auth/login",
+        ]
         
         # Skip authentication for public endpoints
         if request.url.path in public_endpoints:
@@ -52,12 +55,12 @@ class AuthMiddleware:
             # Attach user context to request
             request.state.user_id = user_id
             
-        except jwt.ExpiredSignatureError:
+        except ExpiredSignatureError:
             return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 content={"detail": "Token has expired"}
             )
-        except jwt.JWTError:
+        except JWTError:
             return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 content={"detail": "Could not validate credentials"}

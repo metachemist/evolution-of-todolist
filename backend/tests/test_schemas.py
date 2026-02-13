@@ -1,66 +1,72 @@
 import pytest
-from src.schemas.task import TaskCreate, TaskUpdate, TaskResponse, ErrorResponse, UserResponse
 from uuid import uuid4
 from datetime import datetime
 
+from src.schemas import (
+    TaskCreate, TaskUpdate, TaskResponse,
+    ErrorResponse, UserResponse, TokenResponse,
+    UserCreate, UserLogin,
+)
+
 
 def test_task_create_schema():
-    """Test the TaskCreate schema."""
-    task_create = TaskCreate(title="Test Task", description="Test Description")
-    
-    assert task_create.title == "Test Task"
-    assert task_create.description == "Test Description"
+    task = TaskCreate(title="Test Task", description="A description")
+    assert task.title == "Test Task"
+    assert task.description == "A description"
+
+
+def test_task_create_optional_description():
+    task = TaskCreate(title="Only title")
+    assert task.description is None
 
 
 def test_task_update_schema():
-    """Test the TaskUpdate schema."""
-    task_update = TaskUpdate(title="Updated Task", description="Updated Description")
-    
-    assert task_update.title == "Updated Task"
-    assert task_update.description == "Updated Description"
+    update = TaskUpdate(title="New title")
+    assert update.title == "New title"
+    assert update.description is None
 
 
 def test_task_response_schema():
-    """Test the TaskResponse schema."""
-    task_response = TaskResponse(
-        id=str(uuid4()),
-        title="Test Task",
-        description="Test Description",
-        is_completed=False,
-        created_at=datetime.utcnow().isoformat(),
-        updated_at=datetime.utcnow().isoformat(),
-        owner_id=str(uuid4())
+    uid = uuid4()
+    now = datetime.utcnow()
+    resp = TaskResponse(
+        id=uid, title="T", description=None,
+        is_completed=False, created_at=now, updated_at=now, owner_id=uid,
     )
-    
-    assert task_response.id is not None
-    assert task_response.title == "Test Task"
-    assert task_response.description == "Test Description"
-    assert task_response.is_completed is False
-    assert task_response.owner_id is not None
+    assert resp.id == uid
+    assert resp.is_completed is False
+    assert resp.created_at == now
 
 
 def test_error_response_schema():
-    """Test the ErrorResponse schema."""
-    error_response = ErrorResponse(
-        success=False,
-        data=None,
-        error={"code": "TEST_ERROR", "message": "Test error message"}
+    err = ErrorResponse(
+        success=False, data=None,
+        error={"code": "TEST_ERROR", "message": "Something went wrong"},
     )
-    
-    assert error_response.success is False
-    assert error_response.data is None
-    assert "code" in error_response.error
-    assert "message" in error_response.error
+    assert err.success is False
+    assert err.error["code"] == "TEST_ERROR"
 
 
 def test_user_response_schema():
-    """Test the UserResponse schema."""
-    user_response = UserResponse(
-        id=str(uuid4()),
-        email="test@example.com",
-        created_at=datetime.utcnow().isoformat(),
-        updated_at=datetime.utcnow().isoformat()
-    )
-    
-    assert user_response.id is not None
-    assert user_response.email == "test@example.com"
+    uid = uuid4()
+    now = datetime.utcnow()
+    resp = UserResponse(id=uid, email="a@b.com", created_at=now, updated_at=now)
+    assert resp.email == "a@b.com"
+    assert resp.id == uid
+
+
+def test_token_response_schema():
+    tok = TokenResponse(access_token="abc123")
+    assert tok.access_token == "abc123"
+    assert tok.token_type == "bearer"
+
+
+def test_user_create_schema():
+    uc = UserCreate(email="user@example.com", password="secret123")
+    assert uc.email == "user@example.com"
+    assert uc.password == "secret123"
+
+
+def test_user_login_schema():
+    ul = UserLogin(email="user@example.com", password="secret123")
+    assert ul.email == "user@example.com"

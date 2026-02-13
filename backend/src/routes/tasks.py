@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import List
-from uuid import UUID
 from ..database import get_db_session
 from ..services.task_service import (
     get_tasks, create_task, get_task_by_id, update_task, 
@@ -13,19 +12,20 @@ from ..utils.helpers import create_error_response
 from ..schemas.task import TaskCreate, TaskUpdate, TaskResponse
 
 
-router = APIRouter(prefix="/api/{user_id}", tags=["tasks"])
+router = APIRouter(tags=["tasks"])
 
 
 @router.get("/tasks", response_model=List[TaskResponse])
 async def get_user_tasks(
     user_id: str,
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=1, le=100),
     current_user_id: str = Depends(get_current_user_id),
-    db: AsyncSession = Depends(get_db_session)
+    db: AsyncSession = Depends(get_db_session),
 ):
     """
-    Retrieve all tasks for the specified user.
+    Retrieve paginated tasks for the specified user, ordered by newest first.
     """
-    # Verify that the user_id in the path matches the authenticated user
     if user_id != current_user_id:
         error_response = create_error_response(
             code="UNAUTHORIZED_ACCESS",
@@ -33,10 +33,9 @@ async def get_user_tasks(
         )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
-    
-    # Verify the user exists
+
     user = await get_user_by_id(db, user_id)
     if not user:
         error_response = create_error_response(
@@ -45,10 +44,10 @@ async def get_user_tasks(
         )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
-    
-    tasks = await get_tasks(db, user_id)
+
+    tasks = await get_tasks(db, user_id, skip=skip, limit=limit)
     return tasks
 
 
@@ -70,7 +69,7 @@ async def create_user_task(
         )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     # Verify the user exists
@@ -82,7 +81,7 @@ async def create_user_task(
         )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     # Create the task
@@ -114,7 +113,7 @@ async def get_specific_task(
         )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     # Verify the user exists
@@ -126,7 +125,7 @@ async def get_specific_task(
         )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     # Get the specific task
@@ -138,7 +137,7 @@ async def get_specific_task(
         )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     return task
@@ -163,7 +162,7 @@ async def update_user_task(
         )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     # Verify the user exists
@@ -175,16 +174,16 @@ async def update_user_task(
         )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
-    # Update the task
+    # Update the task (pass None to keep existing value)
     updated_task = await update_task(
-        db, 
-        user_id, 
-        task_id, 
-        task_data.title or "",  # Provide default if None
-        task_data.description
+        db,
+        user_id,
+        task_id,
+        task_data.title,
+        task_data.description,
     )
     
     if not updated_task:
@@ -194,7 +193,7 @@ async def update_user_task(
         )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     return updated_task
@@ -218,7 +217,7 @@ async def delete_user_task(
         )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     # Verify the user exists
@@ -230,7 +229,7 @@ async def delete_user_task(
         )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     # Delete the task
@@ -243,7 +242,7 @@ async def delete_user_task(
         )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     return
@@ -267,7 +266,7 @@ async def toggle_task_completion(
         )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     # Verify the user exists
@@ -279,7 +278,7 @@ async def toggle_task_completion(
         )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     # Toggle the task completion
@@ -292,7 +291,7 @@ async def toggle_task_completion(
         )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=error_response.dict()
+            detail=error_response.model_dump()
         )
     
     return updated_task

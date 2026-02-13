@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status, Header
 from typing import Optional
-import jwt
+from jose import jwt, JWTError
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from pydantic import BaseModel
@@ -59,7 +59,7 @@ def verify_token(token: str) -> Optional[TokenData]:
             return None
         token_data = TokenData(user_id=user_id)
         return token_data
-    except jwt.JWTError:
+    except JWTError:
         return None
 
 
