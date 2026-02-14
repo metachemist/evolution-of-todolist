@@ -1,70 +1,86 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlmodel import select
-from typing import Annotated
-from ..models import UserCreate, User, UserPublic
-from ..db import get_session
-from ..auth.auth_handler import get_password_hash, create_access_token, verify_password, authenticate_user
-from datetime import timedelta
-from ..auth.auth_handler import get_current_user
+from ..database import get_db_session
+from ..schemas.user import UserCreate, UserLogin
+from ..schemas.common import TokenResponse
+from ..services.auth_service import create_user, authenticate_user, get_user_by_email
+from ..services.user_service import get_user_by_id
+from ..utils.auth import (
+    create_access_token,
+    get_current_user_id,
+    set_auth_cookie,
+    clear_auth_cookie,
+)
+from ..utils.helpers import create_error_response
 
 
-router = APIRouter()
+router = APIRouter(tags=["auth"])
 
-@router.post("/register")
-async def register(user: UserCreate, session: Annotated[AsyncSession, Depends(get_session)]):
-    # Check for existing user
-    statement = select(User).where(User.email == user.email)
-    result = await session.exec(statement)
-    existing_user = result.first()
 
-    if existing_user:
+@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+async def register(
+    user_data: UserCreate,
+    response: Response,
+    db: AsyncSession = Depends(get_db_session),
+):
+    """Register a new user and return an access token."""
+    existing = await get_user_by_email(db, user_data.email)
+    if existing:
+        error_response = create_error_response(
+            code="EMAIL_ALREADY_EXISTS",
+            message="A user with this email already exists",
+        )
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+            status_code=status.HTTP_409_CONFLICT,
+            detail=error_response.model_dump(),
         )
 
-    # Create new user
-    hashed_password = get_password_hash(user.password)
-    db_user = User(email=user.email, hashed_password=hashed_password)
+    user = await create_user(db, user_data.email, user_data.password)
+    token = create_access_token(data={"sub": str(user.id)})
+    set_auth_cookie(response, token)
+    return TokenResponse(access_token=token)
 
-    session.add(db_user)
-    await session.commit()
-    await session.refresh(db_user)
 
-    # Generate JWT token
-    access_token_expires = timedelta(minutes=30)
-    access_token = create_access_token(
-        data={"sub": str(db_user.id), "user_id": str(db_user.id), "email": db_user.email}, expires_delta=access_token_expires
-    )
-
-    return {"data": {"token": access_token, "user": db_user}}
-
-@router.post("/login")
-async def login(user_credentials: UserCreate, session: Annotated[AsyncSession, Depends(get_session)]):
-    # Authenticate user using the centralized auth function
-    user = await authenticate_user(session, user_credentials.email, user_credentials.password)
-
+@router.post("/login", response_model=TokenResponse)
+async def login(
+    user_data: UserLogin,
+    response: Response,
+    db: AsyncSession = Depends(get_db_session),
+):
+    """Authenticate a user and return an access token."""
+    user = await authenticate_user(db, user_data.email, user_data.password)
     if not user:
+        error_response = create_error_response(
+            code="INVALID_CREDENTIALS",
+            message="Invalid email or password",
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
+            detail=error_response.model_dump(),
         )
 
-    access_token_expires = timedelta(minutes=30)
-    access_token = create_access_token(
-        data={"sub": str(user.id), "user_id": str(user.id), "email": user.email}, expires_delta=access_token_expires
-    )
+    token = create_access_token(data={"sub": str(user.id)})
+    set_auth_cookie(response, token)
+    return TokenResponse(access_token=token)
 
-    return {"data": {"token": access_token, "user": user}}
 
-@router.get("/me", response_model=UserPublic)
-async def read_users_me(current_user: User = Depends(get_current_user)):
-    """Get current user information based on the provided token"""
-    return current_user
+@router.get("/me")
+async def me(
+    current_user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """Return the current authenticated user's info."""
+    user = await get_user_by_id(db, current_user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    return {"id": str(user.id), "email": user.email}
 
-@router.post("/signout")
-async def signout():
-    """Signout endpoint"""
-    return {"message": "Successfully signed out. Please remove the token from your client-side storage."}
+
+@router.post("/logout")
+async def logout(response: Response):
+    """Clear the auth cookie."""
+    clear_auth_cookie(response)
+    return {"message": "Logged out successfully"}
